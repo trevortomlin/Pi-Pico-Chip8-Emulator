@@ -3,9 +3,6 @@
 #include "hardware/gpio.h"
 #include "pico/binary_info.h"
 
-#include "pico-ssd1306/ssd1306.h"
-#include "hardward/i2c.h"
-
 const uint LED_PIN = 25;
 
 int main() {
