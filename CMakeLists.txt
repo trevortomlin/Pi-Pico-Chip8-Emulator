@@ -11,9 +11,14 @@ add_executable(test
     test.c
 )
 
+add_subdirectory(pico-ssd1306)
+
 pico_enable_stdio_usb(test 1)
 pico_enable_stdio_uart(test 1)
 
 pico_add_extra_outputs(test)
 
-target_link_libraries(test pico_stdlib)
+target_link_libraries(test 
+    pico_stdlib
+    pico_ssd1306
+    hardward_i2c)
