@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(test)
+set(CMAKE_C_COMPILER /usr/bin/arm-none-eabi-gcc)
 
 include(pico_sdk_import.cmake)
+
+project(test C CXX ASM)
 
 pico_sdk_init()
 
