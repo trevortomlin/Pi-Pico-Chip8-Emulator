@@ -50,14 +50,32 @@ int main() {
 
     ssd1306_show(&display);
 
+    gpio_put(KBD_ROW_PINS[0], 1);
+
     while (1) {
 	
-	get_key_pressed();
-	gpio_put(LED_PIN, 0);
-	sleep_ms(250);
-	gpio_put(LED_PIN, 1);
-	puts("Hello World\n");
-	sleep_ms(1000);
+	puts(" ");
+
+	if (gpio_get(KBD_COL_PINS[0] == 1)) {
+	
+	    printf("HIGH");
+	    gpio_put(LED_PIN, 1);
+
+	}
+
+	else {
+	    
+	    printf("LOW");
+	    gpio_put(LED_PIN, 0);
+
+	}
+
+	//get_key_pressed();
+	//gpio_put(LED_PIN, 0);
+	//sleep_ms(250);
+	//gpio_put(LED_PIN, 1);
+	//puts("Hello World\n");
+	//sleep_ms(1000);
     }
 }
 
@@ -74,7 +92,8 @@ void init_kbd() {
     for (col = 0; col < 4; col++) {
 
 	gpio_set_dir(KBD_COL_PINS[col], GPIO_IN);
-
+	gpio_pull_down(KBD_COL_PINS[col]);
+	
     }
 
 }

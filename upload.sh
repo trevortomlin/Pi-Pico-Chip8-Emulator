@@ -1,10 +1,7 @@
-#!/usr/bin/bash
-
-rm -rf build/*
-
+#!/bin/bash
 cd build 
 
 cmake ..
 make -j4
 
-~/Documents/programming/pi-pico/picotool/build/picotool load test.uf2 -x 
+/home/trevor/Documents/programming/pi-pico/picotool/build/picotool load test.uf2 -x
