@@ -46,36 +46,16 @@ int main() {
 
     ssd1306_clear(&display);
     
-    ssd1306_draw_square(&display, 0, 0, 128, 64);
+    //ssd1306_draw_square(&display, 0, 0, 128, 64);
 
     ssd1306_show(&display);
 
-    gpio_put(KBD_ROW_PINS[0], 1);
-
     while (1) {
-	
+
 	puts(" ");
 
-	if (gpio_get(KBD_COL_PINS[0] == 1)) {
-	
-	    printf("HIGH");
-	    gpio_put(LED_PIN, 1);
+	ssd1306_draw_char(&display, 64, 32, 1, get_key_pressed());
 
-	}
-
-	else {
-	    
-	    printf("LOW");
-	    gpio_put(LED_PIN, 0);
-
-	}
-
-	//get_key_pressed();
-	//gpio_put(LED_PIN, 0);
-	//sleep_ms(250);
-	//gpio_put(LED_PIN, 1);
-	//puts("Hello World\n");
-	//sleep_ms(1000);
     }
 }
 
@@ -84,13 +64,15 @@ void init_kbd() {
     int row, col;
 
     for (row = 0; row < 4; row++) {
-    
+	
+	gpio_init(KBD_ROW_PINS[row]);
 	gpio_set_dir(KBD_ROW_PINS[row], GPIO_OUT);
     
     }
 
     for (col = 0; col < 4; col++) {
-
+	
+	gpio_init(KBD_COL_PINS[col]);
 	gpio_set_dir(KBD_COL_PINS[col], GPIO_IN);
 	gpio_pull_down(KBD_COL_PINS[col]);
 	
@@ -100,16 +82,14 @@ void init_kbd() {
 
 char get_key_pressed() {
 
-    int row;
-    int col;
+    int row, row1, col;
+    
 
     for (row = 0; row < 4; row++) {
 
-	gpio_put(KBD_ROW_PINS[row], 0);	
-	
-	for (col = 0; col < 4; col++) {
+	for (row1 = 0; row1 < 4; row1++) {
 
-	    gpio_put(KBD_COL_PINS[col], 0);
+	    gpio_put(KBD_ROW_PINS[row1], 0);
 
 	}
 
@@ -126,11 +106,9 @@ char get_key_pressed() {
 
 	}
 
-	gpio_put(KBD_ROW_PINS[row], 0);
-
     }
 
-    printf("not detected", row, col);
+    printf("not detected");
 
     return "F";
 
