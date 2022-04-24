@@ -10,6 +10,10 @@ const uint LED_PIN = 25;
 
 const uint KBD_ROW_PINS[4] = {15, 14, 13, 12};
 const uint KBD_COL_PINS[4] = {11, 10, 9, 8};
+const char KBD_TO_CHAR[4][4] = {{'1', '2', '3', 'C'},
+				{'4', '5', '6', 'D'},
+				{'7', '8', '9', 'E'},
+				{'A', '0', 'B', 'F'}};
 
 const uint BUZZER_PIN = 16;
 
@@ -48,13 +52,13 @@ int main() {
     
     //ssd1306_draw_square(&display, 0, 0, 128, 64);
 
-    ssd1306_show(&display);
 
     while (1) {
 
 	puts(" ");
 
 	ssd1306_draw_char(&display, 64, 32, 1, get_key_pressed());
+	ssd1306_show(&display);
 
     }
 }
@@ -98,9 +102,8 @@ char get_key_pressed() {
 	for (col = 0; col < 4; col++) {
 	
 	    if (gpio_get(KBD_COL_PINS[col])) {
-	    
-		printf("row: %d, col: %d\n", row, col);
-		return 'A';
+			    
+		return KBD_TO_CHAR[row][col];
 
 	    }
 
@@ -108,8 +111,6 @@ char get_key_pressed() {
 
     }
 
-    printf("not detected");
-
-    return "F";
+    return NULL;
 
 }
