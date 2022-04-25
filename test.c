@@ -52,12 +52,17 @@ int main() {
     
     //ssd1306_draw_square(&display, 0, 0, 128, 64);
 
-
     while (1) {
 
-	puts(" ");
+	char k = get_key_pressed();
+	
+	if (k != NULL) {
+	    puts("");
+	    ssd1306_clear(&display);
+	    ssd1306_draw_char(&display, 64, 32, 4, k);
 
-	ssd1306_draw_char(&display, 64, 32, 1, get_key_pressed());
+	}
+
 	ssd1306_show(&display);
 
     }
@@ -71,6 +76,8 @@ void init_kbd() {
 	
 	gpio_init(KBD_ROW_PINS[row]);
 	gpio_set_dir(KBD_ROW_PINS[row], GPIO_OUT);
+	gpio_pull_down(KBD_ROW_PINS[row]);
+	gpio_put(KBD_ROW_PINS[row], 0);
     
     }
 
@@ -86,31 +93,45 @@ void init_kbd() {
 
 char get_key_pressed() {
 
-    int row, row1, col;
+    int row, col;
     
-
     for (row = 0; row < 4; row++) {
 
-	for (row1 = 0; row1 < 4; row1++) {
-
-	    gpio_put(KBD_ROW_PINS[row1], 0);
-
-	}
+	reset_kbd();
 
 	gpio_put(KBD_ROW_PINS[row], 1);
 
+	sleep_us(100);
+
 	for (col = 0; col < 4; col++) {
-	
+
 	    if (gpio_get(KBD_COL_PINS[col])) {
-			    
 		return KBD_TO_CHAR[row][col];
 
 	    }
 
 	}
-
+	
     }
 
     return NULL;
+
+}
+
+void reset_kbd() {
+
+    int row, col;
+
+    for (row = 0; row < 4; row++) {
+
+	gpio_put(KBD_ROW_PINS[row], 0);
+
+    }
+
+    for (col = 0; col < 4; col++) {
+
+	gpio_put(KBD_COL_PINS[col], 0);
+
+    }
 
 }
