@@ -51,7 +51,9 @@ int main() {
     ssd1306_init(&display, 128, 64, 0x3C, i2c_default);
 
     ssd1306_clear(&display);
-    
+ 
+    display.buffer[10] = 1;
+
     gpio_set_function(BUZZER_PIN, GPIO_FUNC_PWM);
     uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
     //pwm_set_wrap(slice_num, 2);
