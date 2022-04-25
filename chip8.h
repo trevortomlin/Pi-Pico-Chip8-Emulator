@@ -1,6 +1,9 @@
 #ifndef CHIP8_HEADER
 #define CHIP8_HEADER
 
+typedef unsigned char byte;
+typedef unsigned short word;
+
 struct Chip8 {
 
     unsigned char ram[4096];
