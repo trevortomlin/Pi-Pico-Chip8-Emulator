@@ -4,16 +4,16 @@
 struct Chip8 {
 
     unsigned char ram[4096];
-    unsigned char V[16];
+    unsigned char v[16];
 
-    unsigned short I;
-    unsigned char VF;
+    unsigned short i;
+    unsigned char vf;
 
-    unsigned char DT;
-    unsigned char ST;
+    unsigned char dt;
+    unsigned char st;
 
-    unsigned short PC;
-    unsigned char SP;
+    unsigned short pc;
+    unsigned char sp;
 
     unsigned short stack[16];
 

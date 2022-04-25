@@ -34,10 +34,10 @@ void execute(Chip8 *comp, unsigned short opcode) {
 
     
     unsigned short nnn = opcode & 0x0FFF;
-    unsigned short n = opcode & 0x000F;
-    unsigned short x = opcode & 0x0F00;
-    unsigned short y = opcode & 0x00F0;
-    unsigned short nn = opcode & 0x00FF;
+    unsigned char n = opcode & 0x000F;
+    unsigned char x = opcode & 0x0F00;
+    unsigned char y = opcode & 0x00F0;
+    unsigned char nn = opcode & 0x00FF;
 
     switch(opcode & 0xF000) {
 
@@ -283,34 +283,229 @@ void execute(Chip8 *comp, unsigned short opcode) {
 }
 
 void cls(Chip8 *comp);
-void ret(Chip8 *comp);
-void jmp(Chip8 *comp);
-void callnnn(Chip8 *comp);
-void sevxnn(Chip8 *comp);
-void snevxnn(Chip8 *comp);
-void sevxvy(Chip8 *comp);
-void ldvxnn(Chip8 *comp);
-void addvxnn(Chip8 *comp);
-void ldvxvy(Chip8 *comp);
-void orvxvy(Chip8 *comp);
-void addvxvy(Chip8 *comp);
-void subvxvy(Chip8 *comp);
-void shrvxvy(Chip8 *comp);
-void subnvxvy(Chip8 *comp);
-void shlvxvy(Chip8 *comp);
-void snevxvy(Chip8 *comp);
-void ldinnn(Chip8 *comp);
-void jmpv0nnn(Chip8 *comp);
-void rndvxnn(Chip8 *comp);
-void drwvxvyn(Chip8 *comp);
-void skpvx(Chip8 *comp);
-void sknpvx(Chip8 *comp);
-void ldvxdt(Chip8 *comp);
-void ldvxk(Chip8 *comp);
-void lddtvx(Chip8 *comp);
-void ldstvx(Chip8 *comp);
-void addivx(Chip8 *comp);
-void ldfvx(Chip8 *comp);
-void ldbvx(Chip8 *comp);
-void ldivx(Chip8 *comp);
-void ldvxi(Chip8 *comp);
+
+void ret(Chip8 *comp) {
+
+    comp->pc = comp->stack[comp->sp];
+    comp->sp--;
+
+}
+
+void jmp(Chip8 *comp, unsigned short nnn) {
+
+    comp->pc = nnn;
+
+}
+
+void callnnn(Chip8 *comp, unsigned short nnn) {
+
+    comp->sp++;
+    comp->stack[comp->sp] = comp->pc;
+    comp->pc = nnn;
+
+}
+
+void sevxnn(Chip8 *comp, unsigned char x, unsigned char nn) {
+
+    if (comp->v[x] == nn) {
+
+	comp->pc+=2;
+
+    }
+
+}
+
+void snevxnn(Chip8 *comp, unsigned char x, unsigned char nn) {
+
+    if (comp->v[x] != nn) {
+
+	comp->pc+=2;
+
+    }
+
+}
+
+void sevxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    if (comp->v[x] == comp->v[y]) {
+
+	comp->pc+=2;
+
+    }
+
+}
+
+void ldvxnn(Chip8 *comp, unsigned char x, unsigned char nn) {
+
+    comp->v[x] = nn;
+
+}
+
+void addvxnn(Chip8 *comp, unsigned char x, unsigned char nn) {
+
+    comp->v[x] += nn;
+
+}
+
+void ldvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    comp->v[x] = comp->v[y];
+
+}
+
+void orvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    comp->v[x] = comp->v[x] | comp->v[y];
+
+}
+
+void andvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    comp->v[x] = comp->v[x] & comp->v[y];
+
+}
+
+void xorvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    comp->v[x] = comp->v[x] ^ comp->v[y];
+
+}
+
+void addvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    unsigned short res = comp->v[x] + comp->[y];
+
+    if (res > 0xFF) {
+
+	comp->vf = 1;
+
+    }
+
+    else {
+
+	comp->vf = 0;
+
+    }
+
+    comp->v[x] += comp->v[y];
+    
+
+}
+
+void subvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    if (comp->v[x] > comp->v[y]) {
+
+	comp->vf = 1;
+
+    }
+
+    else {
+
+	comp->vf = 0;
+
+    }
+
+    comp->v[x] -= comp->v[y];
+    
+}
+
+void shrvxvy(Chip8 *comp, unsigned char x) {
+
+    comp->vf = comp->v[x] & 0x01;
+    comp->v[x] = comp->v[x] >> 1;
+
+}
+
+void subnvxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    if (comp->v[x] > comp->v[y]) {
+
+	comp->vf = 1;
+
+    }
+
+    else {
+
+	comp->vf = 0;
+
+    }
+
+    comp->v[x] = comp->v[y] - comp->v[x];
+
+}
+
+void shlvxvy(Chip8 *comp, unsigned char x) {
+
+    comp->vf = comp->v[x] & 0x80;
+    comp->v[x] = comp->v[x] << 1;
+
+}
+
+void snevxvy(Chip8 *comp, unsigned char x, unsigned char y) {
+
+    if (comp->v[x] != comp->v[y]) {
+
+	comp->pc+=2;
+
+    }
+
+}
+
+void ldinnn(Chip8 *comp, unsigned short nnn) {
+
+    comp->i = nnn;
+
+}
+
+void jmpv0nnn(Chip8 *comp, unsigned short nnn) {
+
+    comp->pc = comp->v[0] + nnn;
+
+}
+
+void rndvxnn(Chip8 *comp, unsigned char nn) {
+
+    comp->v[x] = rand() & nn;
+
+}
+
+void drwvxvyn(Chip8 *comp, unsigned char x, unsigned char y, unsigned char n) {}
+
+void skpvx(Chip8 *comp, unsigned char x) {}
+
+void sknpvx(Chip8 *comp, unsigned char x) {}
+
+void ldvxdt(Chip8 *comp, unsigned char x) {
+
+    comp->v[x] = dt;
+
+}
+
+void ldvxk(Chip8 *comp, unsigned char x) {}
+
+void lddtvx(Chip8 *comp, unsigned char x) {
+
+    comp->dt = comp->v[x];
+
+}
+
+void ldstvx(Chip8 *comp, unsigned char x) {
+
+    comp->st = comp->v[x];
+
+}
+
+void addivx(Chip8 *comp, unsigned char x) {
+
+    comp->i += x;
+
+}
+
+void ldfvx(Chip8 *comp, unsigned char x) {}
+
+void ldbvx(Chip8 *comp, unsigned char x) {}
+
+void ldivx(Chip8 *comp, unsigned char x) {}
+
+void ldvxi(Chip8 *comp, unsigned char x) {}
