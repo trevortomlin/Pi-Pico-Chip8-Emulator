@@ -3,6 +3,8 @@
 #include "hardware/gpio.h"
 #include "pico/binary_info.h"
 
+#include "hardware/pwm.h"
+
 #include "hardware/i2c.h"
 #include "ssd1306.h"
 
@@ -19,6 +21,8 @@ const uint BUZZER_PIN = 16;
 
 char get_key_pressed();
 void init_kbd();
+void reset_kbd();
+void pwm_set_freq_duty(uint slice_num, uint chan, uint32_t f, int d);
 
 int main() {
 
@@ -29,10 +33,8 @@ int main() {
 
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
- 
-    i2c_init(i2c_default, 400000);
 
-    gpio_set_function(BUZZER_PIN, GPIO_FUNC_PWM);
+    i2c_init(i2c_default, 400000);
 
     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
@@ -50,16 +52,33 @@ int main() {
 
     ssd1306_clear(&display);
     
-    //ssd1306_draw_square(&display, 0, 0, 128, 64);
+    gpio_set_function(BUZZER_PIN, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(BUZZER_PIN);
+    //pwm_set_wrap(slice_num, 2);
+    //pwm_set_chan_level(slice_num, PWM_CHAN_A, 1);
+    //pwm_set_chan_level(slice_num, PWM_CHAN_B, 2);
+    //pwm_set_clkdiv(slice_num, 16);
+    
+    uint chan = pwm_gpio_to_channel(BUZZER_PIN);
+    pwm_set_freq_duty(slice_num, chan, 440, 50);
 
     while (1) {
 
 	char k = get_key_pressed();
 	
 	if (k != NULL) {
+	    
+	    pwm_set_enabled(slice_num, true);
 	    puts("");
 	    ssd1306_clear(&display);
 	    ssd1306_draw_char(&display, 64, 32, 4, k);
+
+	}
+
+	else {
+
+
+	    pwm_set_enabled(slice_num, false);
 
 	}
 
@@ -133,5 +152,21 @@ void reset_kbd() {
 	gpio_put(KBD_COL_PINS[col], 0);
 
     }
+
+}
+
+// 
+void pwm_set_freq_duty(uint slice_num, uint chan, uint32_t f, int d) {
+
+    uint32_t clock = 125000000;
+    uint32_t divider16 = clock / f / 4096 + (clock % (f * 4096) != 0);
+
+    if (divider16 / 16 == 0) divider16 = 16;
+
+    uint32_t wrap = clock * 16 / divider16 / f - 1;
+
+    pwm_set_clkdiv_int_frac(slice_num, divider16/16, divider16 & 0xF);
+    pwm_set_wrap(slice_num, wrap);
+    pwm_set_chan_level(slice_num, chan, wrap * d / 100);
 
 }
