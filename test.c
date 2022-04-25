@@ -155,7 +155,8 @@ void reset_kbd() {
 
 }
 
-// 
+// Explains how to get desired frequency using PWM on the PICO
+// https://www.i-programmer.info/programming/hardware/14849-the-pico-in-c-basic-pwm.html?start=2#:~:text=The%20PWM%20counter%20is%2016,PWM%20frequency%20at%201.9kHz.
 void pwm_set_freq_duty(uint slice_num, uint chan, uint32_t f, int d) {
 
     uint32_t clock = 125000000;
