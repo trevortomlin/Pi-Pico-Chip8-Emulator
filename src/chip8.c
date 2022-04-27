@@ -1,4 +1,6 @@
 #include "chip8.h"
+#include "settings.h"
+#include "rom.h"
 
 const byte fontset[80] = 
 {
@@ -23,7 +25,10 @@ const byte fontset[80] =
 
 void chip8_init(Chip8 *comp) {
 
+    srand(42);
 
+    memcpy(&comp->memory+0x50, fontset, 80);
+    memcpy(&comp->memory+0x200, rom_bytes, rom_bytes_len);
 
 }
 
