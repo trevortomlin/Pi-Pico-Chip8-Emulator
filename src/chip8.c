@@ -21,6 +21,19 @@ const byte fontset[80] =
 
 }; 
 
+void chip8_init(Chip8 *comp) {
+
+
+
+}
+
+
+void chip8_cycle(Chip8 *comp) {
+
+
+
+}
+
 word fetch(Chip8 *comp) {
 
     word opcode = (comp->PC << 8) | (comp->PC+1);
@@ -31,12 +44,11 @@ word fetch(Chip8 *comp) {
 }
 
 void execute(Chip8 *comp, word opcode) {
-
     
     word nnn = opcode & 0x0FFF;
     byte n = opcode & 0x000F;
-    byte x = opcode & 0x0F00;
-    byte y = opcode & 0x00F0;
+    byte x = (opcode & 0x0F00) >> 8;
+    byte y = (opcode & 0x00F0) >> 4;
     byte nn = opcode & 0x00FF;
 
     switch(opcode & 0xF000) {
