@@ -519,10 +519,44 @@ void addivx(Chip8 *comp, byte x) {
 
 }
 
-void ldfvx(Chip8 *comp, byte x) {}
+void ldfvx(Chip8 *comp, byte x) {
 
-void ldbvx(Chip8 *comp, byte x) {}
+    comp->i = comp->v[x] * 5;
 
-void ldivx(Chip8 *comp, byte x) {}
+}
 
-void ldvxi(Chip8 *comp, byte x) {}
+void ldbvx(Chip8 *comp, byte x) {
+
+    byte h = comp->v[x] / 100;
+    byte t = (comp->v[x] - h * 100) / 10;
+    byte o = comp->v[x] - h * 100 - t * 10;
+
+    comp->memory[comp->i] = h;
+    comp->memory[comp->i + 1] = t;
+    comp->memory[comp->i + 2] = o;
+
+}
+
+void ldivx(Chip8 *comp, byte x) {
+ 
+    int i;
+
+    for (i = 0; i <= x; i++) {
+
+	comp->memory[comp->i + i] = comp->v[i];
+
+    }
+
+}
+
+void ldvxi(Chip8 *comp, byte x) {
+
+    int i;
+
+    for (i = 0; i <= x; i++) {
+
+	comp->v[i] = comp->memory[comp->i + i];
+
+    }
+
+}
