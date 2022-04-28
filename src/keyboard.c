@@ -1,6 +1,6 @@
 #include "settings.h"
 
-void init_kbd() {
+void kbd_init() {
 
     int row, col;
 
@@ -24,13 +24,13 @@ void init_kbd() {
 
 }
 
-char get_key_pressed() {
+char kbd_wait_input() {
 
     int row, col;
 
     for (row = 0; row < 4; row++) {
 
-	reset_kbd();
+	kbd_reset();
 
 	gpio_put(KBD_ROW_PINS[row], 1);
 
@@ -39,10 +39,10 @@ char get_key_pressed() {
 	for (col = 0; col < 4; col++) {
 
 	    if (gpio_get(KBD_COL_PINS[col])) {
+		
 		return KBD_TO_CHAR[row][col];
-
+	   
 	    }
-
 	}
 
     }
@@ -51,7 +51,40 @@ char get_key_pressed() {
 
 }
 
-void reset_kbd() {
+
+void kbd_get_keys(bool kbd[]) {
+
+    int row, col;
+
+    for (row = 0; row < 4; row++) {
+
+	kbd_reset();
+
+	gpio_put(KBD_ROW_PINS[row], 1);
+
+	sleep_us(100);
+
+	for (col = 0; col < 4; col++) {
+
+	    if (gpio_get(KBD_COL_PINS[col])) {
+		
+		kbd[row * 4 + col] = true;
+	    
+	    }
+
+	    else {
+
+		kbd[row * 4 + col] = false;
+
+	    }
+
+	}
+
+    }
+
+}
+
+void kbd_reset() {
 
     int row, col;
 
