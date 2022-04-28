@@ -24,7 +24,7 @@ struct Chip8 {
 
     word stack[16];
 
-    byte buffer[CHIP8_HEIGHT * CHIP8_WIDTH];
+    bool buffer[CHIP8_HEIGHT * CHIP8_WIDTH];
 
     bool kbd[16];
 
@@ -32,7 +32,7 @@ struct Chip8 {
 
 void chip8_init();
 void chip8_cycle();
-void chip8_render();
+void chip8_render(ssd1306_t *disp, bool buffer, uint scale);
 
 word fetch(Chip8 *comp);
 
