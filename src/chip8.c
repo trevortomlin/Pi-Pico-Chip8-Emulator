@@ -39,6 +39,12 @@ void chip8_cycle(Chip8 *comp) {
 
 }
 
+void chip8_render(Chip8 *comp) {
+
+
+
+}
+
 word fetch(Chip8 *comp) {
 
     word opcode = (comp->PC << 8) | (comp->PC+1);
@@ -489,9 +495,25 @@ void rndvxnn(Chip8 *comp, byte nn) {
 
 void drwvxvyn(Chip8 *comp, byte x, byte y, byte n) {}
 
-void skpvx(Chip8 *comp, byte x) {}
+void skpvx(Chip8 *comp, byte x) {
 
-void sknpvx(Chip8 *comp, byte x) {}
+    if (comp->kbd[x]) {
+
+	comp->pc+=2;
+
+    }
+
+}
+
+void sknpvx(Chip8 *comp, byte x) {
+
+    if (!comp->kbd[x]) {
+
+	comp->pc+=2;
+
+    }
+
+}
 
 void ldvxdt(Chip8 *comp, byte x) {
 
@@ -499,7 +521,13 @@ void ldvxdt(Chip8 *comp, byte x) {
 
 }
 
-void ldvxk(Chip8 *comp, byte x) {}
+void ldvxk(Chip8 *comp, byte x) {
+
+    char input = kbd_wait_input();
+
+    comp->v[x] = input;
+
+}
 
 void lddtvx(Chip8 *comp, byte x) {
 

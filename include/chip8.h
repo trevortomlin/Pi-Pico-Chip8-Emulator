@@ -26,10 +26,13 @@ struct Chip8 {
 
     byte buffer[CHIP8_HEIGHT * CHIP8_WIDTH];
 
+    bool kbd[16];
+
 }
 
 void chip8_init();
 void chip8_cycle();
+void chip8_render();
 
 word fetch(Chip8 *comp);
 
