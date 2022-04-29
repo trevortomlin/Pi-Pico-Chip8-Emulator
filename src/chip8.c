@@ -493,7 +493,35 @@ void rndvxnn(Chip8 *comp, byte nn) {
 
 }
 
-void drwvxvyn(Chip8 *comp, byte x, byte y, byte n) {}
+void drwvxvyn(Chip8 *comp, byte x, byte y, byte n) {
+
+    comp->vf = 0;
+
+    int row, col;
+
+    for (row = 0; row < n; row++) {
+
+	byte sprite = comp->ram[comp->i + row];
+
+	for (col = 0; col < SPRITE_HEIGHT; col++) {
+
+	    char colBit = sprite & (0x01 << 7 - col);
+
+	    if (colBit > 0) {
+
+		uint bIndex = ((x+col) % CHIP8_HEIGHT) + ((y+row) % CHIP8_WIDTH) * CHIP8_WIDTH;
+		
+		if (comp->buffer[bIndex]) comp->vf = 1;
+		
+		comp->buffer[bIndex] ^= 1;
+
+	    }
+
+	}
+
+    }
+
+}
 
 void skpvx(Chip8 *comp, byte x) {
 

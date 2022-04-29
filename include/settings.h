@@ -10,4 +10,7 @@ static const uint BUZZER_FREQ = 440;
 static const uint DISPLAY_WIDTH = 128;
 static const uint DISPLAY_HEIGHT = 64;
 
+
+static const uint spriteWidth = 8;
+
 #endif
