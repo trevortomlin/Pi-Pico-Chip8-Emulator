@@ -35,7 +35,25 @@ void chip8_init(Chip8 *comp) {
 
 void chip8_cycle(Chip8 *comp) {
 
+    word opcode = fetch(comp);
+    execute(comp, opcode);
 
+    if (comp->st > 0 && comp->speaker_state) {
+
+	speaker_enable();
+
+    }
+
+    else {
+	
+	if (!comp->speaker_state) speaker_disable();
+
+    }
+    
+    if (comp->st > 0) comp->st--;
+    if (comp->dt > 0) comp->dt--;
+
+    chip8_render(comp, 2);
 
 }
 
