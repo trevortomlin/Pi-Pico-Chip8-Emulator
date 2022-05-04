@@ -28,11 +28,14 @@ struct Chip8 {
 
     bool kbd[16];
 
+    ssd1306_t *disp;
+
+    bool paused;
 }
 
-void chip8_init();
-void chip8_cycle();
-void chip8_render(ssd1306_t *disp, bool buffer, uint scale);
+void chip8_init(Chip8 *comp);
+void chip8_cycle(Chip8 *comp);
+void chip8_render(Chip8 *comp, uint scale);
 
 word fetch(Chip8 *comp);
 

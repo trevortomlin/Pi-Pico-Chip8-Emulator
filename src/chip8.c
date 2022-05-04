@@ -57,9 +57,9 @@ void chip8_cycle(Chip8 *comp) {
 
 }
 
-void chip8_render(Chip8 *comp, ssd1306_t *disp, uint scale) {
+void chip8_render(Chip8 *comp, uint scale) {
 
-    display_render(disp, comp->buffer, scale);
+    display_render(comp->disp, comp->buffer, scale);
 
 }
 
