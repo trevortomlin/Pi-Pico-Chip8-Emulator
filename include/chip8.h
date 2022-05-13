@@ -1,6 +1,10 @@
 #ifndef CHIP8_HEADER
 #define CHIP8_HEADER
 
+#include "pico/stdlib.h"
+#include "ssd1306.h"
+#include "stdbool.h"
+
 typedef struct Chip8 Chip8;
 typedef unsigned char byte;
 typedef unsigned short word;
@@ -10,7 +14,7 @@ const uint CHIP8_WIDTH = 32;
 
 struct Chip8 {
 
-    byte ram[4096];
+    byte memory[4096];
     byte v[16];
 
     word i;
@@ -31,7 +35,7 @@ struct Chip8 {
     ssd1306_t *disp;
 
     bool paused;
-}
+};
 
 void chip8_init(Chip8 *comp);
 void chip8_cycle(Chip8 *comp);
@@ -39,7 +43,7 @@ void chip8_render(Chip8 *comp, uint scale);
 
 word fetch(Chip8 *comp);
 
-void execute(Chip8 *comp);
+void execute(Chip8 *comp, word opcode);
 
 void cls(Chip8 *comp);
 void ret(Chip8 *comp);
@@ -62,7 +66,7 @@ void shlvxvy(Chip8 *comp, byte x, byte y);
 void snevxvy(Chip8 *comp, byte x, byte y);
 void ldinnn(Chip8 *comp, word nnn);
 void jmpv0nnn(Chip8 *comp, word nnn);
-void rndvxnn(Chip8 *comp, byte nn);
+void rndvxnn(Chip8 *comp, byte x, byte nn);
 void drwvxvyn(Chip8 *comp, byte x, byte y, byte n);
 void skpvx(Chip8 *comp, byte x);
 void sknpvx(Chip8 *comp, byte x);

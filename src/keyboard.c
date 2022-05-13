@@ -1,4 +1,8 @@
 #include "settings.h"
+#include "pico/stdlib.h"
+#include "keyboard.h"
+#include <stddef.h>
+#include <stdbool.h>
 
 void kbd_init() {
 

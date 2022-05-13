@@ -1,6 +1,7 @@
 #include "chip8.h"
 #include "settings.h"
 #include "rom.h"
+#include <string.h>
 
 const byte fontset[80] = 
 {
@@ -65,7 +66,7 @@ void chip8_render(Chip8 *comp, uint scale) {
 
 word fetch(Chip8 *comp) {
 
-    word opcode = (comp->PC << 8) | (comp->PC+1);
+    word opcode = (comp->pc << 8) | (comp->pc+1);
     comp->pc+=2;
 
     return opcode;
@@ -117,7 +118,7 @@ void execute(Chip8 *comp, word opcode) {
 	
 	case 0x3000: 
 
-	    sevnn(comp, x, nn);
+	    sevxnn(comp, x, nn);
 	    
 	    break;
 
@@ -414,7 +415,7 @@ void xorvxvy(Chip8 *comp, byte x, byte y) {
 
 void addvxvy(Chip8 *comp, byte x, byte y) {
 
-    word res = comp->v[x] + comp->[y];
+    word res = comp->v[x] + comp->v[y];
 
     if (res > 0xFF) {
 
@@ -451,7 +452,7 @@ void subvxvy(Chip8 *comp, byte x, byte y) {
     
 }
 
-void shrvxvy(Chip8 *comp, byte x) {
+void shrvxvy(Chip8 *comp, byte x, byte y) {
 
     comp->vf = comp->v[x] & 0x01;
     comp->v[x] = comp->v[x] >> 1;
@@ -476,7 +477,7 @@ void subnvxvy(Chip8 *comp, byte x, byte y) {
 
 }
 
-void shlvxvy(Chip8 *comp, byte x) {
+void shlvxvy(Chip8 *comp, byte x, byte y) {
 
     comp->vf = comp->v[x] & 0x80;
     comp->v[x] = comp->v[x] << 1;
@@ -505,7 +506,7 @@ void jmpv0nnn(Chip8 *comp, word nnn) {
 
 }
 
-void rndvxnn(Chip8 *comp, byte nn) {
+void rndvxnn(Chip8 *comp, byte x, byte nn) {
 
     comp->v[x] = rand() & nn;
 

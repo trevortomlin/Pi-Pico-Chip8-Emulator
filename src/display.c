@@ -1,3 +1,7 @@
+#include "ssd1306.h"
+#include "stdbool.h"
+#include "pico/stdlib.h"
+
 void display_render(ssd1306_t *disp, bool buffer, uint scale) {
 
     ssd1306_clear(disp);
